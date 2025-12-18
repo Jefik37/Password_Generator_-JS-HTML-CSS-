@@ -23,9 +23,9 @@ const ENTROPY2 = document.getElementById("Entropy2");
 
 HTML_CODE = function(variable) {
     return `<div style = "margin: auto;width: 80%; height: 80px; background-color: white; margin-top: 20px; padding: 20px;
-        border-color: black; border-style: solid; border-width: 4px; border-radius: 10px; margin-bottom: 20px;
-        overflow: auto;"><p style = 'text-align: left; margin: 0px; padding: 0px; font-family: "cascadia code semibold", monospace;
-        font-size: 1.4em;'>${variable}</p></div>`
+        border-color: black; border-style: solid; border-width: 4px; border-radius: 10px; margin-bottom: 0px;
+        overflow: auto;"><p style = 'font-size: 0.8em; text-indent: 0px;text-align: left; margin: 0px; padding: 0px; font-family: "cascadia code semibold", monospace;
+        font-size: 1em;'>${variable}</p></div>`
 }
 
 function selectRandom(inputString) {
@@ -169,12 +169,12 @@ SUBMIT_OPT1.onclick = function() {
         for (let i = 0; i < 50; i++) {
             setTimeout(function() {
                 let password = genPassword(PASSWORD_SIZE, MUST_BE, PERMISSION_SYMBOLS, PERMISSION_UPPER, PERMISSION_LOWER, PERMISSION_NUMBERS);
-                let RESPONSE1_HTML = HTML_CODE("&#x1F512; Generating your password:" + password);
+                let RESPONSE1_HTML = HTML_CODE("&#x1F512; Generating your password:" + "<br>" +  password);
                 RESPONSE_OPT1.innerHTML = RESPONSE1_HTML;}, i**2);
         }
         setTimeout(function() {
             REAL_FIRST_PASSWORD = genPassword(PASSWORD_SIZE, MUST_BE, PERMISSION_SYMBOLS, PERMISSION_UPPER, PERMISSION_LOWER, PERMISSION_NUMBERS);
-            let RESPONSE1_HTML = HTML_CODE("&#x1F513; Your password:" + REAL_FIRST_PASSWORD);
+            let RESPONSE1_HTML = HTML_CODE("&#x1F513; Your password:" + "<br>" +  REAL_FIRST_PASSWORD);
             RESPONSE_OPT1.innerHTML = RESPONSE1_HTML;
             ENTROPY1.innerText = `Status: ${STATUS}\nEntropy: ${entropy.toFixed(2)}`}, 50**2 + 1);
     }
@@ -191,12 +191,12 @@ SUBMIT_OPT2.onclick = function() {
         for (let i = 0; i < 50; i++) {
             setTimeout(function() {
                 let MESSED_PASSWORD = shuffleString(INPUT);
-                let RESPONSE2_HTML = HTML_CODE("&#x1F512; Generating your password:" + MESSED_PASSWORD);
+                let RESPONSE2_HTML = HTML_CODE("&#x1F512; Generating your password:" + "<br>" +  MESSED_PASSWORD);
                 RESPONSE_OPT2.innerHTML = RESPONSE2_HTML; console.log(i)}, i**2);
         }
         setTimeout(function() {
             REAL_SEC_PASSWORD = shuffleString(INPUT);
-            let RESPONSE2_HTML = HTML_CODE("&#x1F513; Your password:" + REAL_SEC_PASSWORD);
+            let RESPONSE2_HTML = HTML_CODE("&#x1F513; Your password:" + "<br>" +  REAL_SEC_PASSWORD);
             RESPONSE_OPT2.innerHTML = RESPONSE2_HTML;
             const entropy = Math.log2(104 ** INPUT.length)
             ENTROPY2.innerText = `Status: ${getPasswordStrength(entropy)}\nEntropy: ${entropy.toFixed(2)}`}, 50**2 + 1);
