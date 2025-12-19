@@ -292,10 +292,10 @@ GET_PASSWORDS.onclick = function() {
         HTML_STR += '<tbody>';
         for (let i = 0; i < DATASET_PW.length; i++) {
             HTML_STR += HTML_TABLE2(marker, DATASET_PW[i][0], DATASET_PW[i][1], DATASET_PW[i][2], DATASET_PW[i][3], DATASET_PW[i][4]);
-        marker = !marker;
+            marker = !marker;
+        }
         HTML_STR += '</tbody>';
         HTML_STR += "</table>";
-        }
         DATASET.innerHTML = HTML_STR;
     }
 }
