@@ -176,3 +176,10 @@ select {
     margin: auto;
     max-width: 500px;
 }
+
+#dataset_but {
+    width: 120px;
+    height: 30px;
+    font-size: 0.9em;
+    display: inline;
+}

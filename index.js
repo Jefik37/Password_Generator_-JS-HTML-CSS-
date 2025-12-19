@@ -1,6 +1,12 @@
 const MIN_CHAR = 8;
 const MAX_CHAR = 256
 const SYMBOLS = '@$*#&+-=';
+const DATASET_PW = [];
+let watch_table = false;
+const EMBEDED_CSS = 'padding: 5px;border-width: 2px;border-color: black;border-style: solid;'; //Will be used for cells in tables.
+const BASIC_TABLE_CSS = 'margin: auto; width: 80%; border-collapse: collapse; border-color: black; border-width: 2px; border-style: solid;';
+const C1TABLE = "#007f86;";
+const C2TABLE = "#c1f7ff;";
 
 //Constant variables that will deal with the first option
 const NUMBER_OF_CHARS = document.getElementById("inumber");
@@ -10,6 +16,7 @@ const INCLUDE_UPPER = document.getElementById("iupper_opt");
 const INCLUDE_LOWER = document.getElementById("ilower_opt");
 const COMBO_BOX = document.getElementById("iselection_of_char");
 const SUBMIT_OPT1 = document.getElementById("i1submit");
+const GET_PASSWORDS = document.getElementById("dataset_but");
 
 //Constant variables that will deal with the second option.
 const INPUT_TEXT = document.getElementById("ishuffleInput");
@@ -20,13 +27,14 @@ const RESPONSE_OPT1 = document.getElementById("passwordPlacement1");
 const RESPONSE_OPT2 = document.getElementById("passwordPlacement2");
 const ENTROPY1 = document.getElementById("Entropy1");
 const ENTROPY2 = document.getElementById("Entropy2");
+const DATASET = document.getElementById("idataset");
 
 HTML_CODE = function(label_par, variable) {
     return `<p style = "text-align: center; font-size: 2em; padding: 0px; margin-bottom: 10px;">${label_par}</p>
         <div style = "margin: auto;width: 80%; height: 80px; background-color: white; margin-top: 20px; padding: 20px;
         border-color: black; border-style: solid; border-width: 4px; border-radius: 10px; margin-bottom: 10px;
-        overflow: auto;"><p style = 'font-size: 0.8em; text-indent: 0px;text-align: left; margin: 0px; padding: 0px; font-family: "cascadia code semibold", monospace;
-        font-size: 1em;'>${variable}</p></div>`
+        overflow: auto;"><p style = 'font-size: 0.8em; text-indent: 0px;text-align: left; margin: 0px; padding: 0px;
+        font-family: "cascadia code semibold", monospace; font-size: 1em;'>${variable}</p></div>`
 }
 
 function selectRandom(inputString) {
@@ -174,10 +182,39 @@ SUBMIT_OPT1.onclick = function() {
                 RESPONSE_OPT1.innerHTML = RESPONSE1_HTML;}, i**2);
         }
         setTimeout(function() {
+            let marker = true;
             REAL_FIRST_PASSWORD = genPassword(PASSWORD_SIZE, MUST_BE, PERMISSION_SYMBOLS, PERMISSION_UPPER, PERMISSION_LOWER, PERMISSION_NUMBERS);
             let RESPONSE1_HTML = HTML_CODE("&#x1F513; Your password:",  REAL_FIRST_PASSWORD);
             RESPONSE_OPT1.innerHTML = RESPONSE1_HTML;
-            ENTROPY1.innerText = `Status: ${STATUS}\nEntropy: ${entropy.toFixed(2)}`}, 50**2 + 1);
+            ENTROPY1.innerText = `Status: ${STATUS}\nEntropy: ${entropy.toFixed(2)}`;
+            DATASET_PW.push([DATASET_PW.length + 1, REAL_FIRST_PASSWORD, REAL_FIRST_PASSWORD.length, entropy, STATUS]);
+            if (watch_table) {
+                HTML_STR = `<table style = "${BASIC_TABLE_CSS}">
+                                <thead>
+                                    <tr>
+                                        <th style = "${EMBEDED_CSS}">Id</th>
+                                        <th style = "${EMBEDED_CSS}">Password</th>
+                                        <th style = "${EMBEDED_CSS}">Length</th>
+                                        <th style = "${EMBEDED_CSS}">Entropy</th>
+                                        <th style = "${EMBEDED_CSS}">Status</th>
+                                    </tr>
+                                </thead>`;
+                HTML_STR += '<tbody>';
+                for (let i = 0; i < DATASET_PW.length; i++) {
+                    HTML_STR += `<tr style = "background-color: ${(marker ? C1TABLE : C2TABLE)}; color: ${(marker ? "white;" : "black;")};">
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][0]}</td>
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][1]}</td>
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][2]}</td>
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][3].toFixed(2)}</td>
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][4]}</td>
+                                </tr>`;
+                    marker = !marker;
+                }
+                HTML_STR += '</tbody>';
+                HTML_STR += "</table>";
+                DATASET.innerHTML = HTML_STR;
+            }
+        }, 50**2 + 1);
     }
 }
 
@@ -193,14 +230,46 @@ SUBMIT_OPT2.onclick = function() {
             setTimeout(function() {
                 let MESSED_PASSWORD = shuffleString(INPUT);
                 let RESPONSE2_HTML = HTML_CODE("&#x1F512; Generating your password:",  MESSED_PASSWORD);
-                RESPONSE_OPT2.innerHTML = RESPONSE2_HTML; console.log(i)}, i**2);
+                RESPONSE_OPT2.innerHTML = RESPONSE2_HTML; console.log(i)
+            }, i**2);
         }
         setTimeout(function() {
+            let marker = true;
             REAL_SEC_PASSWORD = shuffleString(INPUT);
             let RESPONSE2_HTML = HTML_CODE("&#x1F513; Your password:",  REAL_SEC_PASSWORD);
             RESPONSE_OPT2.innerHTML = RESPONSE2_HTML;
-            const entropy = Math.log2(104 ** INPUT.length)
-            ENTROPY2.innerText = `Status: ${getPasswordStrength(entropy)}\nEntropy: ${entropy.toFixed(2)}`}, 50**2 + 1);
+            const entropy = Math.log2(104 ** INPUT.length);
+            const status = getPasswordStrength(entropy);
+            ENTROPY2.innerText = `Status: ${status}\nEntropy: ${entropy.toFixed(2)}`;
+            DATASET_PW.push([DATASET_PW.length + 1, REAL_SEC_PASSWORD, REAL_SEC_PASSWORD.length, entropy, status]);
+            if (watch_table) {
+            HTML_STR = `<table style = "${BASIC_TABLE_CSS}">
+                            <thead>
+                                <tr>
+                                    <th style = "${EMBEDED_CSS}">Id</th>
+                                    <th style = "${EMBEDED_CSS}">Password</th>
+                                    <th style = "${EMBEDED_CSS}">Length</th>
+                                    <th style = "${EMBEDED_CSS}">Entropy</th>
+                                    <th style = "${EMBEDED_CSS}">Status</th>
+                                </tr>
+                            </thead>`;
+            HTML_STR += '<tbody>';
+            for (let i = 0; i < DATASET_PW.length; i++) {
+                HTML_STR += `<tr style = "background-color: ${(marker ? C1TABLE : C2TABLE)}; color: ${(marker ? "white;" : "black;")};">
+                                <td style = "${EMBEDED_CSS}">${DATASET_PW[i][0]}</td>
+                                <td style = "${EMBEDED_CSS}">${DATASET_PW[i][1]}</td>
+                                <td style = "${EMBEDED_CSS}">${DATASET_PW[i][2]}</td>
+                                <td style = "${EMBEDED_CSS}">${DATASET_PW[i][3].toFixed(2)}</td>
+                                <td style = "${EMBEDED_CSS}">${DATASET_PW[i][4]}</td>
+                            </tr>`;
+                marker = !marker;
+                }
+            HTML_STR += '</tbody>';
+            HTML_STR += "</table>";
+            console.log(HTML_STR);
+            DATASET.innerHTML = HTML_STR;
+            }
+        }, 50**2 + 1);
     }
 }
 
@@ -217,5 +286,40 @@ document.getElementById("clip2").onclick = function() {
         navigator.clipboard.writeText(REAL_SEC_PASSWORD);
     } else {
         alert(ALERT_MSG);
+    }
+}
+
+GET_PASSWORDS.onclick = function() {
+    let marker = true;
+    let HTML_STR;
+    if (DATASET_PW.length === 0 ) {
+        document.getElementById("NoAv").innerText = `No available data`;
+    } else {
+        watch_table = true;
+        document.getElementById("NoAv").innerText = ``;
+        HTML_STR = `<table style = "${BASIC_TABLE_CSS}">
+                                <thead>
+                                    <tr">
+                                        <th style = "${EMBEDED_CSS}">Id</th>
+                                        <th style = "${EMBEDED_CSS}">Password</th>
+                                        <th style = "${EMBEDED_CSS}">Length</th>
+                                        <th style = "${EMBEDED_CSS}">Entropy</th>
+                                        <th style = "${EMBEDED_CSS}">Status</th>
+                                    </tr>
+                                </thead>`;
+        HTML_STR += '<tbody>';
+        for (let i = 0; i < DATASET_PW.length; i++) {
+            HTML_STR += `<tr style = "background-color: ${(marker ? C1TABLE : C2TABLE)}; color: ${(marker ? "white;" : "black;")};">
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][0]}</td>
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][1]}</td>
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][2]}</td>
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][3].toFixed(2)}</td>
+                                    <td style = "${EMBEDED_CSS}">${DATASET_PW[i][4]}</td>
+                                </tr>`;
+        marker = !marker;
+        HTML_STR += '</tbody>';
+        HTML_STR += "</table>";
+        }
+        DATASET.innerHTML = HTML_STR;
     }
 }
