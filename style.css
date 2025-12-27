@@ -101,8 +101,8 @@ div {
     margin-top: 10px;
 }
 
-hr {
-    width: 60vw;
+.hr {
+    width: 100%;
     margin: auto;
     margin-bottom: 10px;
 }
